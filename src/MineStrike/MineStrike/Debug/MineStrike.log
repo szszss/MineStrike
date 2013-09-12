@@ -1,0 +1,26 @@
+﻿生成启动时间为 9/12/2013 9:31:10 PM。
+     1>项目“C:\Users\szszss\documents\visual studio 2010\Projects\MineStrike\src\MineStrike\MineStrike\MineStrike.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“Debug\MineStrike.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         所有输出均为最新。
+       Link:
+         所有输出均为最新。
+         MineStrike.vcxproj -> C:\Users\szszss\documents\visual studio 2010\Projects\MineStrike\src\MineStrike\Debug\MineStrike.exe
+       PostBuildEvent:
+         xcopy /e /y "C:\Users\szszss\documents\visual studio 2010\Projects\MineStrike\src\MineStrike\MineStrike\..\..\Files" "C:\Users\szszss\documents\visual studio 2010\Projects\MineStrike\src\MineStrike\Debug\"
+         xcopy /e /y "C:\Users\szszss\documents\visual studio 2010\Projects\MineStrike\src\MineStrike\MineStrike\..\..\Files-Win32" "C:\Users\szszss\documents\visual studio 2010\Projects\MineStrike\src\MineStrike\Debug\"
+         :VCEnd
+         C:\Users\szszss\documents\visual studio 2010\Projects\MineStrike\src\MineStrike\MineStrike\..\..\Files\resource\image\logoMineStrike.bmp
+         复制了 1 个文件
+         C:\Users\szszss\documents\visual studio 2010\Projects\MineStrike\src\MineStrike\MineStrike\..\..\Files-Win32\lua52.dll
+         C:\Users\szszss\documents\visual studio 2010\Projects\MineStrike\src\MineStrike\MineStrike\..\..\Files-Win32\SDL2.dll
+         复制了 2 个文件
+       FinalizeBuildStatus:
+         正在删除文件“Debug\MineStrike.unsuccessfulbuild”。
+         正在对“Debug\MineStrike.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“C:\Users\szszss\documents\visual studio 2010\Projects\MineStrike\src\MineStrike\MineStrike\MineStrike.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:00.10
