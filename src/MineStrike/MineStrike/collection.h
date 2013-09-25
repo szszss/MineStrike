@@ -21,24 +21,44 @@ typedef struct _HashTreeNode{
 	struct _HashTreeNode *leftNode;
 	struct _HashTreeNode *rightNode;
 	struct _HashTreeNode *nextNode; //当发生Hash冲突时,节点就会变成一个链表
-};
+} _HashTreeNode;
 
 typedef struct {
 	int length;
-	struct _HashTreeNode rootNode;
+	struct _HashTreeNode *rootNode;
 } HashTree;
 
 HashTree* HashTreeCreate();
-BOOL HashTreePut(HashTree* ht,char* key,void* value);
+BOOL HashTreeAdd(HashTree* ht,char* key,void* value);
 BOOL HashTreeSet(HashTree* ht,char* key,void* value);
 BOOL HashTreeRemove(HashTree* ht,char* key);
 void* HashTreeGet(HashTree* ht,char* key);
-int HashTreeLength(HashTree* ht,char* key);
-int HashTreeLength(HashTree* ht,char* key);
+//int HashTreeLength(HashTree* ht,char* key);
+BOOL HashTreeDestroy(HashTree* ht);
 #pragma endregion HashTree
 
 #pragma region ArrayList
 typedef struct {
-
+	void **arrays;
+	int available;
+	int usedLength;
+	int maxLength;
 } ArrayList;
+
+typedef struct{
+	ArrayList* arrayList;
+	int pointer;
+} ArrayListIterator;
+
+ArrayList* ArrayListCreate(int defLength);
+BOOL ArrayListAdd(ArrayList* arrayList,void* value);
+BOOL ArrayListSet(ArrayList* arrayList,void* value,int index);
+BOOL ArrayListRemove(ArrayList* arrayList,void* value);
+void* ArrayListGet(ArrayList* arrayList,int index);
+int ArrayListIndexOf(ArrayList* arrayList,void* value);
+ArrayListIterator* ArrayListMakeIterator(ArrayList* arrayList);
+
+BOOL ArrayListIteratorHasNext(ArrayListIterator* iterator,BOOL autoFree);
+void* ArrayListIteratorGetNext(ArrayListIterator* iterator);
+
 #pragma endregion ArrayList

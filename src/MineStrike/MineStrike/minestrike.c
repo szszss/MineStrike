@@ -1,65 +1,86 @@
 #include "minestrike.h"
 
 char *gamePath;
-SDL_Window *window = NULL;
-SDL_Renderer *renderer = NULL;
+extern SDL_Window *window;
+extern SDL_Renderer *renderer;
 lua_State *luaState = NULL;
 
 int main(int argc, char *argv[])
 {
-	SDL_Surface *bmp = null;
-	SDL_Texture *tex = null;
+	int stats=0;
 	if (InitLua(luaState) != 0)
 	{
 		return GameError(ERROR_FAILED_TO_INIT_LUA);
 	}
-	if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
+	if ((stats=InitRenderEngine())!=0)
 	{
-		return GameError(ERROR_FAILED_TO_INIT_SDL);
+		return GameError(stats);
 	}
-	window = SDL_CreateWindow("Hello World!", 200, 200, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
-	if(window == null)
+	if ((stats=InitResourceManager())!=0)
 	{
-		return GameError(ERROR_FAILED_TO_CREATE_WINDOW);
+		return GameError(stats);
 	}
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if(renderer == null)
+	if ((stats=InitWindow("Hello World!",WIDTH, HEIGHT))!=0)
 	{
-		SDL_DestroyWindow(window);
-		return GameError(ERROR_FAILED_TO_CREATE_RENDERER);
+		return GameError(stats);
 	}
-	bmp = SDL_LoadBMP("resource/image/logoMineStrike.bmp");
-	if (bmp == null)
-	{
-        return GameError(1);    
-	}
-	tex = SDL_CreateTextureFromSurface(renderer, bmp);
-	SDL_FreeSurface(bmp);
-	SDL_RenderClear(renderer);
-	SDL_RenderCopy(renderer, tex, NULL, NULL);
-	SDL_RenderPresent(renderer);
-	SDL_Delay(5000);
-	SDL_DestroyTexture(tex);
+	GameMainLoop();
 	return GameQuit();
+}
+
+int GameMainLoop()
+{
+	int stats = 0;
+	while(1)
+	{
+		if(Update()!=0 || Render()!=0)
+			break;
+		SDL_Delay(FRAME);
+	}
+	return 0;
+}
+
+int HandleEvent(SDL_Event sdlEvent)
+{
+	switch (sdlEvent.type)
+	{
+		case SDL_QUIT:
+			return -1;
+			break;
+	}
+	return 0;
+}
+
+int Update()
+{
+	SDL_Event sdlEvent;
+	while(SDL_PollEvent(&sdlEvent))
+	{
+		if(HandleEvent(sdlEvent)!=0)
+		{
+			return -1;
+		}
+	}
+	return 0;
 }
 
 int GameQuit()
 {
-	if(window!=NULL) SDL_DestroyWindow(window);
-	if(renderer!=NULL) SDL_DestroyRenderer(renderer);
-	SDL_Quit();
+	DestroyRenderEngine();
 	return 0;
 }
 
 int GameError(int errorCode)
 {
-	const char *cause = SDL_GetError();
-	printf(cause);
+	//const char *cause = SDL_GetError();
+	//printf(cause);
 	return errorCode;
 }
 
 void GameCrash( int errorCode )
 {
+	GameError(errorCode);
+	exit(errorCode);
 }
 
 

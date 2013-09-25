@@ -30,6 +30,12 @@
     <ClInclude Include="collection.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="renderengine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="resourcemanager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="minestrike.c">
@@ -42,6 +48,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="oswork.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="collection.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="renderengine.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="resourcemanager.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

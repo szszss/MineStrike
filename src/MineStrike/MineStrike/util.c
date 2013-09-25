@@ -1,10 +1,10 @@
 #include "util.h"
-#include <malloc.h>
+#include "minestrike.h"
 
 StringBuilder* SBCreate()
 {
-	StringBuilder *sb = (StringBuilder*)malloc(sizeof(StringBuilder));
-	sb->bufferedString = (char**)malloc(sizeof(char*)*STRING_BUILDER_MAX_BUFFER);
+	StringBuilder *sb = (StringBuilder*)malloc_s(sizeof(StringBuilder));
+	sb->bufferedString = (char**)malloc_s(sizeof(char*)*STRING_BUILDER_MAX_BUFFER);
 	sb->bufferPointer = 0;
 	return sb;
 }
@@ -38,6 +38,18 @@ char* SBBuild( StringBuilder *sb )
 void SBAbandon(StringBuilder *sb)
 {
 	free(sb);
+}
+
+void* malloc_s(size_t size)
+{
+	void *mem = NULL;
+	mem = malloc(size);
+	if(mem == NULL)
+	{
+		printf("Out of memory!\n");
+		GameCrash(ERROR_OUT_OF_MEMORY);
+	}
+	return mem;
 }
 
 
