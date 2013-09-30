@@ -5,22 +5,22 @@
 HashTree *textureHT = NULL;
 extern SDL_Renderer *renderer;
 
-int InitResourceManager()
+int RM_InitResourceManager()
 {
 	textureHT = HashTreeCreate();
 	return 0;
 }
 
-SDL_Texture* GetTexture( char* imageFile )
+SDL_Texture* RE_GetTexture( char* imageFile )
 {
 	SDL_Texture* texture = NULL;
-	texture = HashTreeGet(textureHT,imageFile);
+	texture = (SDL_Texture*)HashTreeGet(textureHT,imageFile);
 	if(texture==NULL)
-		return LoadTexture(imageFile);
+		return RE__LoadTexture(imageFile);
 	return texture;
 }
 
-SDL_Texture* LoadTexture( char* imageFile )
+SDL_Texture* RE__LoadTexture( char* imageFile )
 {
 	SDL_Texture* texture = NULL;
 	texture = IMG_LoadTexture(renderer, imageFile);

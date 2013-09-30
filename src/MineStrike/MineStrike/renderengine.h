@@ -3,7 +3,8 @@
 #include "SDL.h"
 #include "SDL_image.h"
 
-int InitRenderEngine();
-int InitWindow(char* name,int width,int height);
-int DestroyRenderEngine();
-int Render();
+int RE_InitRenderEngine();
+int RE_InitWindow(char* name,int width,int height);
+int RE_DestroyRenderEngine();
+int RE_Render();
+int RE_DrawImage(char* imageName,const SDL_Rect* srcrect,const SDL_Rect* dstrect);

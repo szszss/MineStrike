@@ -3,7 +3,7 @@
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 
-int InitRenderEngine()
+int RE_InitRenderEngine()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
 	{
@@ -12,14 +12,14 @@ int InitRenderEngine()
 	return 0;
 }
 
-int InitWindow(char* name,int width,int height)
+int RE_InitWindow(char* name,int width,int height)
 {
 	window = SDL_CreateWindow(name, 200, 200, width, height, SDL_WINDOW_SHOWN);
 	if(window == null)
 	{
 		return ERROR_FAILED_TO_CREATE_WINDOW;
 	}
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if(renderer == null)
 	{
 		SDL_DestroyWindow(window);
@@ -28,7 +28,7 @@ int InitWindow(char* name,int width,int height)
 	return 0;
 }
 
-int DestroyRenderEngine()
+int RE_DestroyRenderEngine()
 {
 	if(window!=NULL) SDL_DestroyWindow(window);
 	if(renderer!=NULL) SDL_DestroyRenderer(renderer);
@@ -36,11 +36,17 @@ int DestroyRenderEngine()
 	return 0;
 }
 
-int Render()
+int RE_Render()
 {
-	SDL_Texture *tex = LoadTexture("resource/image/logoMineStrike.bmp");
 	SDL_RenderClear(renderer);
-	SDL_RenderCopy(renderer, tex, NULL, NULL);
+	RE_DrawImage("resource/image/logoMineStrike.bmp",NULL,NULL);
 	SDL_RenderPresent(renderer);
+	return 0;
+}
+
+int RE_DrawImage(char* imageName,const SDL_Rect* srcrect,const SDL_Rect* dstrect )
+{
+	SDL_Texture *tex = RE_GetTexture(imageName);
+	SDL_RenderCopy(renderer, tex, NULL, NULL);
 	return 0;
 }

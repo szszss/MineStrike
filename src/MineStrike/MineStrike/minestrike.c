@@ -12,15 +12,15 @@ int main(int argc, char *argv[])
 	{
 		return GameError(ERROR_FAILED_TO_INIT_LUA);
 	}
-	if ((stats=InitRenderEngine())!=0)
+	if ((stats=RE_InitRenderEngine())!=0)
 	{
 		return GameError(stats);
 	}
-	if ((stats=InitResourceManager())!=0)
+	if ((stats=RM_InitResourceManager())!=0)
 	{
 		return GameError(stats);
 	}
-	if ((stats=InitWindow("Hello World!",WIDTH, HEIGHT))!=0)
+	if ((stats=RE_InitWindow("Hello World!",WIDTH, HEIGHT))!=0)
 	{
 		return GameError(stats);
 	}
@@ -33,7 +33,7 @@ int GameMainLoop()
 	int stats = 0;
 	while(1)
 	{
-		if(Update()!=0 || Render()!=0)
+		if(Update()!=0 || RE_Render()!=0)
 			break;
 		SDL_Delay(FRAME);
 	}
@@ -44,6 +44,7 @@ int HandleEvent(SDL_Event sdlEvent)
 {
 	switch (sdlEvent.type)
 	{
+
 		case SDL_QUIT:
 			return -1;
 			break;
@@ -66,7 +67,7 @@ int Update()
 
 int GameQuit()
 {
-	DestroyRenderEngine();
+	RE_DestroyRenderEngine();
 	return 0;
 }
 
