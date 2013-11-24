@@ -21,3 +21,5 @@ char* SBBuild(StringBuilder *sb);
 void SBAbandon(StringBuilder *sb);
 /*分配内存并且检查是否成功,失败会直接终止游戏并返回错误码250.*/
 void* malloc_s(size_t size);
+/*重新分配内存并且检查是否成功,失败会直接终止游戏并返回错误码250.*/
+void* realloc_s(void* ptr,size_t size);

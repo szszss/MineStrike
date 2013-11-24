@@ -1,9 +1,11 @@
 #pragma once
 
+#ifndef _WINDEF_
 #ifndef BOOL
-#define BOOL int
+typedef int BOOL;
 #define FALSE 0
 #define TRUE 1
+#endif
 #endif
 
 /*

@@ -15,8 +15,10 @@ The bootstrap is used to load&run other lua script file.
 --]]
 
 function main()
-	
-
-
+    package.path = './data/lua/?.lua;' .. package.path;
+    print("Hello, world!\n");
+    require("game");
+    require("graphics");
+    --tick();
+    return 0;
 end
-

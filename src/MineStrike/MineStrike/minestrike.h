@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include "renderengine.h"
 #include "resourcemanager.h"
 #include "luafacade.h"
-#include "oswork.h"
+//#include "oswork.h"
 #include "util.h"
 
 #ifndef null
@@ -23,6 +23,7 @@
 #define ERROR_FAILED_TO_INIT_SDL 1         //无法初始化SDL
 #define ERROR_FAILED_TO_CREATE_WINDOW 2    //无法创建窗口
 #define ERROR_FAILED_TO_CREATE_RENDERER 3  //无法创建渲染器
+#define ERROR_FAILED_TO_INIT_TTF 4         //无法初始化TTF
 #define ERROR_FAILED_TO_INIT_LUA 10        //初始化Lua引擎发生错误
 #define ERROR_OUT_OF_MEMORY 250            //内存不足
 #define ERROR_UNKNOWN_ERROR 255            //未知错误

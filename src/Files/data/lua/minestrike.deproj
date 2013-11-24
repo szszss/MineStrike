@@ -3,4 +3,10 @@
   <file>
     <filename>boot.lua</filename>
   </file>
+  <file>
+    <filename>game.lua</filename>
+  </file>
+  <file>
+    <filename>graphics.lua</filename>
+  </file>
 </project>

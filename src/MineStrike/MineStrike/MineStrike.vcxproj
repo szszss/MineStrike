@@ -43,7 +43,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\..\..\Lib\Lua5.2.1\include;$(MSBuildProjectDirectory)\..\..\Lib\SDL2\include;$(MSBuildProjectDirectory)\..\..\Lib\SDL2_ttf-2.0.12\include;$(MSBuildProjectDirectory)\..\..\Lib\SDL2_image-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WINDOWS;NO_STDIO_REDIRECT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
@@ -51,7 +51,7 @@
       <AdditionalLibraryDirectories>$(MSBuildProjectDirectory)\..\..\Lib\Lua5.2.1;$(MSBuildProjectDirectory)\..\..\Lib\SDL2\lib\x86;$(MSBuildProjectDirectory)\..\..\Lib\SDL2_ttf-2.0.12\lib\x86;$(MSBuildProjectDirectory)\..\..\Lib\SDL2_image-2.0.0\lib\x86</AdditionalLibraryDirectories>
       <EntryPointSymbol>
       </EntryPointSymbol>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;lua52.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>

@@ -3,20 +3,17 @@
 char *gamePath;
 extern SDL_Window *window;
 extern SDL_Renderer *renderer;
-lua_State *luaState = NULL;
+extern lua_State *luaState;
+unsigned long long tickTime = 0;
 
 int main(int argc, char *argv[])
 {
 	int stats=0;
-	if (InitLua(luaState) != 0)
-	{
-		return GameError(ERROR_FAILED_TO_INIT_LUA);
-	}
 	if ((stats=RE_InitRenderEngine())!=0)
 	{
 		return GameError(stats);
 	}
-	if ((stats=RM_InitResourceManager())!=0)
+	if ((stats=InitResourceManager())!=0)
 	{
 		return GameError(stats);
 	}
@@ -24,6 +21,11 @@ int main(int argc, char *argv[])
 	{
 		return GameError(stats);
 	}
+	if (InitLua()!=0)
+	{
+		return GameError(ERROR_FAILED_TO_INIT_LUA);
+	}
+	//printf("System ONLINE! Have a good lu!\n");
 	GameMainLoop();
 	return GameQuit();
 }
@@ -36,6 +38,7 @@ int GameMainLoop()
 		if(Update()!=0 || RE_Render()!=0)
 			break;
 		SDL_Delay(FRAME);
+		tickTime++;
 	}
 	return 0;
 }
@@ -62,6 +65,8 @@ int Update()
 			return -1;
 		}
 	}
+	if(LuaTick(tickTime))
+		return -1;
 	return 0;
 }
 

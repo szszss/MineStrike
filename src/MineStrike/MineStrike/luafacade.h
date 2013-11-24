@@ -2,4 +2,6 @@
 #include "lualib.h"
 #include "lauxlib.h"
 
-int InitLua(lua_State *initedLua);
+int InitLua();
+int LuaTick(unsigned long long tick);
+int LuaRender(unsigned long long tick);

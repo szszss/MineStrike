@@ -20,12 +20,13 @@ StringBuilder* SBAppend( StringBuilder *sb,char* str )
 
 char* SBBuild( StringBuilder *sb )
 {
-	int i,length=0;
-	char* str;
+	int i,length=1;
+	char* str=NULL;
 	for(i=0;i<sb->bufferPointer;i++)
 	{
 		length+=strlen(sb->bufferedString[i]);
 	}
+	str = (char*)malloc_s(length*sizeof(char));
 	memset(str,0,length*sizeof(char));
 	for(i=0;i<sb->bufferPointer;i++)
 	{
@@ -50,6 +51,17 @@ void* malloc_s(size_t size)
 		GameCrash(ERROR_OUT_OF_MEMORY);
 	}
 	return mem;
+}
+
+void* realloc_s( void* ptr,size_t size )
+{
+	ptr = realloc(ptr,size);
+	if(ptr == NULL)
+	{
+		printf("Out of memory!\n");
+		GameCrash(ERROR_OUT_OF_MEMORY);
+	}
+	return ptr;
 }
 
 
