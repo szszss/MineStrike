@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include "util.h"
 
+extern SDL_Window *window;
+
 #ifdef WINDOWS
 /*
 ThreadProxy* ThreadCreate( unsigned int pid,char* name,void (*func)(void* param))
@@ -82,4 +84,28 @@ BOOL OS_PathExist(char* path)
 	return FilePathExists(path);
 }
 
+/*char* OS_UTF8ToOSEncoding( char* utf8text,BOOL autoFreeOldText )
+{
+	int i;
+	char *newText = NULL;
+	size_t size = MultiByteToWideChar(CP_UTF8,0,utf8text,-1,NULL,0);
+	wchar_t *newWText = (wchar_t*)malloc_s((size+1)*sizeof(wchar_t));
+	newText = (char*)malloc_s((size*4+1)*sizeof(char));
+	memset(newWText,0,size+1);
+	memset(newText,0,size*4+1);
+	MultiByteToWideChar(CP_UTF8,0,utf8text,-1,newWText,size);
+	wcstombs(newText,newWText,size*4);
+	newText = (char*)realloc_s(newText,(strlen(newText)+1)*sizeof(char));
+	if(autoFreeOldText)
+		free(utf8text);
+	free(newWText);
+	return newText;
+}*/
+
 #endif
+
+//是不是应该挪到别处?毕竟看起来它不是平台相关的.
+char* OS_SetWindowTitle( char* title )
+{
+	SDL_SetWindowTitle(window,title);
+}

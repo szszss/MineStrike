@@ -40,3 +40,5 @@ BOOL* ThreadStop(ThreadProxy* thread);
 
 char* OS_GetFontPath(char* fontName,char* backupFontName);
 BOOL OS_PathExist(char* path);
+//char* OS_UTF8ToOSEncoding(char* utf8text,BOOL autoFreeOldText);
+char* OS_SetWindowTitle(char* title);

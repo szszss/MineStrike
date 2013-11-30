@@ -52,7 +52,7 @@ int RE_Render()
 {
 	SDL_Color color = {255,255,255};
 	SDL_RenderClear(renderer);
-	RE_DrawImage("resource/image/logoMineStrike.bmp",NULL,NULL);
+	//RE_DrawImage("resource/image/logoMineStrike.bmp",NULL,NULL);
 	//RE_DrawTextUNICODE(L"ohahahaha This is Power daze aaaaaaaaaaa 这就是爱 不爽不要来",10,10,24,-1,color,"msyh.ttf");
 	if(LuaRender(tickTime))
 		return -1;
@@ -62,8 +62,28 @@ int RE_Render()
 
 int RE_DrawImage(char* imageName,const SDL_Rect* srcrect,const SDL_Rect* dstrect )
 {
-	SDL_Texture *tex = GetTexture(imageName);
+	SDL_Texture *tex = RM_GetTexture(imageName);
 	return SDL_RenderCopy(renderer, tex, srcrect, dstrect);
+}
+
+int RE_DrawImageRaw(char* imageName,int x,int y,int w,int h,int u,int v,int uw,int vh)
+{
+	SDL_Texture *tex = RM_GetTexture(imageName);
+	SDL_Rect srcrect;
+	SDL_Rect dstrect;
+	dstrect.x=x;
+	dstrect.y=y;
+	if(w==-1 || h==-1)
+	{
+		SDL_QueryTexture(tex,NULL,NULL,w==-1?&w:NULL,h==-1?&h:NULL);
+	}
+	dstrect.w=w;
+	dstrect.h=h;
+	srcrect.x=u;
+	srcrect.y=v;
+	srcrect.w = uw!=-1?uw:w;
+	srcrect.h = uw!=-1?uw:w;
+	return SDL_RenderCopy(renderer, tex, &srcrect, &dstrect);
 }
 
 int RE_DrawTextUTF8(char* text,int x,int y,int fontSize,int width,SDL_Color color,char* fontFile )
@@ -95,7 +115,8 @@ SDL_Texture* RE_GenTextTextureUTF8(char* text,char* fontFile,SDL_Color color, in
 	if (font == NULL)
 		GameCrash(0); //TODO:一个正确的错误码
 	//surf = TTF_RenderUTF8_Blended(font, text, color);
-	surf = TTF_RenderUTF8_Blended_Wrapped(font, text, color,width==-1?WIDTH:(Uint32)width);
+	text = WrapText(text,(width==-1?WIDTH:width)/fontSize);
+	surf = TTF_RenderUTF8_Blended_Wrapped(font, text, color,WIDTH*2);
 	texture = SDL_CreateTextureFromSurface(renderer, surf);
 	SDL_FreeSurface(surf);
 	TTF_CloseFont(font);
@@ -122,6 +143,7 @@ int RE_DrawTextUNICODE(wchar_t* text,int x,int y,int fontSize,int width,SDL_Colo
 	return 0;
 }
 
+//XXX:Unicode版的实现和UTF8的实现有差别,准确说,Unicode版没有考虑自动换行...
 SDL_Texture* RE_GenTextTextureUNICODE(wchar_t* text,char* fontFile,SDL_Color color, int fontSize, int width )
 {
 	SDL_Surface *surf;

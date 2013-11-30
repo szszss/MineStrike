@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	{
 		return GameError(stats);
 	}
-	if ((stats=InitResourceManager())!=0)
+	if ((stats=RM_InitResourceManager())!=0)
 	{
 		return GameError(stats);
 	}
@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
 int GameMainLoop()
 {
 	int stats = 0;
+	SDL_StartTextInput();
 	while(1)
 	{
 		if(Update()!=0 || RE_Render()!=0)
@@ -47,7 +48,15 @@ int HandleEvent(SDL_Event sdlEvent)
 {
 	switch (sdlEvent.type)
 	{
+		case SDL_KEYDOWN:
+			LuaInputKeyDown(sdlEvent.key.keysym.sym);
+		break;
+		case SDL_TEXTINPUT:
+			LuaInputText(sdlEvent.text.text);
+			break;
+		case SDL_TEXTEDITING:
 
+			break;
 		case SDL_QUIT:
 			return -1;
 			break;
@@ -88,6 +97,3 @@ void GameCrash( int errorCode )
 	GameError(errorCode);
 	exit(errorCode);
 }
-
-
-

@@ -23,3 +23,5 @@ void SBAbandon(StringBuilder *sb);
 void* malloc_s(size_t size);
 /*重新分配内存并且检查是否成功,失败会直接终止游戏并返回错误码250.*/
 void* realloc_s(void* ptr,size_t size);
+/*为一个字符串分行. 绝对不要释放返回的字符串,原因见代码!*/
+char* WrapText(char* text,unsigned int width);

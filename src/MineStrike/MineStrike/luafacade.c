@@ -8,6 +8,8 @@ lua_State *luaState = NULL;
 void* Lua_malloc(void *ud,void *ptr,size_t osize,size_t nsize);
 int Lua_registerFunction();
 int CDrawText(lua_State *L);
+int CDrawImage(lua_State *L);
+int CWindowSetTitle(lua_State *L);
 
 int InitLua()
 {
@@ -18,6 +20,10 @@ int InitLua()
 		return 1;
 	}
 	luaL_openlibs(luaState);
+	if(Lua_registerFunction(luaState))
+	{
+		return 1;
+	}
 	if(luaL_loadfile(luaState,"data/lua/boot.lua") || lua_pcall(luaState,0,1,0)) //Œ¥ƒ‹‘Ÿ»Îboot
 	{
 		return 1;
@@ -29,10 +35,6 @@ int InitLua()
 		return 1;
 	}
 	lua_pop(luaState,-1);
-	if(Lua_registerFunction(luaState))
-	{
-		return 1;
-	}
 	return 0;
 }
 
@@ -78,16 +80,52 @@ int LuaRender(unsigned long long tick)
 	return 0;
 }
 
+
+int LuaInputText( char* text )
+{
+	char* error = NULL;
+	lua_getglobal(luaState,"Input");
+	lua_getfield(luaState,-1,"inputText");
+	lua_pushstring(luaState,text);
+	if(lua_pcall(luaState,1,1,0) || !lua_isnumber(luaState,-1) || lua_tonumber(luaState,-1))
+	{
+		error = (char*)lua_tostring(luaState,-1);
+		return 1;
+	}
+	lua_pop(luaState,-1);
+	return 0;
+}
+
+int LuaInputKeyDown(const int key)
+{
+	char* error = NULL;
+	lua_getglobal(luaState,"Input");
+	lua_getfield(luaState,-1,"inputKeyDown");
+	lua_pushnumber(luaState,key);
+	if(lua_pcall(luaState,1,1,0) || !lua_isnumber(luaState,-1) || lua_tonumber(luaState,-1))
+	{
+		error = (char*)lua_tostring(luaState,-1);
+		return 1;
+	}
+	lua_pop(luaState,-1);
+	return 0;
+}
+
+
 int Lua_registerFunction(lua_State *L)
 {
 	lua_pushcfunction(L,CDrawText);
 	lua_setglobal(L,"CDrawText");
+	lua_pushcfunction(L,CWindowSetTitle);
+	lua_setglobal(L,"CWindowSetTitle");
+	lua_pushcfunction(L,CDrawImage);
+	lua_setglobal(L,"CDrawImage");
 	return 0;
 }
 
 int CDrawText( lua_State *L )
 {
-	char* text = (char*)lua_tostring(L,1);
+	char *text = (char*)lua_tostring(L,1);
 	int x = (int)lua_tonumber(L,2);
 	int y = (int)lua_tonumber(L,3);
 	int size = (int)lua_tonumber(L,4);
@@ -100,4 +138,29 @@ int CDrawText( lua_State *L )
 	int result = RE_DrawTextUTF8(text,x,y,size,width,color,font);
 	lua_pushboolean(L,result);
 	return 1;
+}
+
+int CDrawImage(lua_State *L)
+{
+	char *imageName = (char*)lua_tostring(L,1);
+	int x = (int)lua_tonumber(L,2);
+	int y = (int)lua_tonumber(L,3);
+	int w = (int)lua_tonumber(L,4);
+	int h = (int)lua_tonumber(L,5);
+	int u = (int)lua_tonumber(L,6);
+	int v = (int)lua_tonumber(L,7);
+	int uw = (int)lua_tonumber(L,8);
+	int vh = (int)lua_tonumber(L,9);
+	int result;
+	result = RE_DrawImageRaw(imageName,x,y,w,h,u,v,uw,vh);
+	lua_pushboolean(L,result);
+	return 1;
+}
+
+int CWindowSetTitle( lua_State *L )
+{
+	char* title = (char*)lua_tostring(L,1);
+	OS_SetWindowTitle(title);
+	//GameSetTitle("Œ‘≤€!");
+	return 0;
 }

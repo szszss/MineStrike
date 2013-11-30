@@ -57,6 +57,7 @@
     <PostBuildEvent>
       <Command>xcopy /e /y "$(MSBuildProjectDirectory)\..\..\Files" "$(TargetDir)"
 xcopy /e /y "$(MSBuildProjectDirectory)\..\..\Files-Win32" "$(TargetDir)"</Command>
+      <Message>Copying files...</Message>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -84,6 +85,7 @@ xcopy /e /y "$(MSBuildProjectDirectory)\..\..\Files-Win32" "$(TargetDir)"</Comma
     <PostBuildEvent>
       <Command>xcopy /e /y "$(MSBuildProjectDirectory)\..\..\Files" "$(TargetDir)"
 xcopy /e /y "$(MSBuildProjectDirectory)\..\..\Files-Win32" "$(TargetDir)"</Command>
+      <Message>Copying files...</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -1,24 +1,26 @@
 --[[
-Ç¿Ï®¿ó¿Ó
-Mine¡áStrike Project~
-Powered by ÉÙÅ®ÉñÒş¾ãÀÖ²¿~
+å¼ºè¢­çŸ¿å‘
+Mineâ™‚Strike Project~
+Powered by å°‘å¥³ç¥éšä¿±ä¹éƒ¨~
 Wrote by Emmalubally(a.k.a szszss)~
 Started at 2013-9-11
 --]]
 
 --[[
-Æô¶¯Æ÷ÎÄ¼ş
+å¯åŠ¨å™¨æ–‡ä»¶
 Bootstrap
 
-Æô¶¯Æ÷ÎÄ¼şÓÃÓÚ¼ì²é²¢Òıµ¼ÆäËûLua½Å±¾ÎÄ¼şÔØÈëºÍÔËĞĞ.
+å¯åŠ¨å™¨æ–‡ä»¶ç”¨äºæ£€æŸ¥å¹¶å¼•å¯¼å…¶ä»–Luaè„šæœ¬æ–‡ä»¶è½½å…¥å’Œè¿è¡Œ.
 The bootstrap is used to load&run other lua script file.
 --]]
 
 function main()
-    package.path = './data/lua/?.lua;' .. package.path;
+    package.path = './data/lua/?.lua;./data/lua/lib/?.lua;' .. package.path;
     print("Hello, world!\n");
-    require("game");
     require("graphics");
-    --tick();
+    require("input");
+    require("util");
+    require("game");
+    initGame();
     return 0;
 end
