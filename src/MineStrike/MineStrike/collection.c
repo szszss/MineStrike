@@ -160,7 +160,7 @@ _HashTreeNode* _HashTreeGet(HashTree* ht,char* key)
 		}
 	}
 }
-BOOL HashTreeRemove(HashTree* ht,char* key)
+BOOL HashTreeRemove(HashTree* ht,char* key,void** value)
 {
 	_HashTreeNode* node = NULL;
 	_HashTreeNode* parent = NULL;
@@ -181,6 +181,8 @@ BOOL HashTreeRemove(HashTree* ht,char* key)
 		node->nextNode->parentNode=parent;
 		node->nextNode->leftNode=node->leftNode;
 		node->nextNode->rightNode=node->rightNode;
+		if(value!=null)
+			*value = node->value;
 		free(node);
 		return TRUE;
 	}
@@ -235,29 +237,31 @@ void* HashTreeGet(HashTree* ht,char* key)
 	return node->value;
 }
 //int HashTreeLength(HashTree* ht,char* key);
-BOOL _HashTreeNodeDestroy(_HashTreeNode* node)
+BOOL _HashTreeNodeDestroy(_HashTreeNode* node,BOOL deleteData)
 {
 	char i = 0;
 	if(node->nextNode!=NULL)
-		i += _HashTreeNodeDestroy(node->nextNode);
+		i += _HashTreeNodeDestroy(node->nextNode,deleteData);
 	else
 		i++;
 	if(node->leftNode!=NULL)
-		i += _HashTreeNodeDestroy(node->leftNode);
+		i += _HashTreeNodeDestroy(node->leftNode,deleteData);
 	else
 		i++;
 	if(node->rightNode!=NULL)
-		i += _HashTreeNodeDestroy(node->rightNode);
+		i += _HashTreeNodeDestroy(node->rightNode,deleteData);
 	else
 		i++;
 	if(i!=3)
 		return FALSE;
+	if(deleteData && node->value!=NULL)
+		free(node->value);
 	free(node);
 	return TRUE;
 }
-BOOL HashTreeDestroy(HashTree* ht)
+BOOL HashTreeDestroy(HashTree* ht,BOOL deleteData)
 {
-	BOOL result = _HashTreeNodeDestroy(ht->rootNode);
+	BOOL result = _HashTreeNodeDestroy(ht->rootNode,deleteData);
 	if(result == TRUE)
 		free(ht);
 	return result;
@@ -285,4 +289,170 @@ Hash HashCode(char* string)
 		i++;
 	}
 	return hash>MAX_STRING_HASH?hash%MAX_STRING_HASH:hash;
+}
+
+void ArrayListRelocateEnd(ArrayList* arrayList);
+
+ArrayList* ArrayListCreate(unsigned long defSize, float defGrowRatio)
+{
+	ArrayList* arrayList = (ArrayList*)malloc_s(sizeof(ArrayList));
+	arrayList->maxSize=defSize;
+	arrayList->growRatio = defGrowRatio;
+	arrayList->fragmented=FALSE;
+	arrayList->usedSize=0;
+	arrayList->arrays=(void**)malloc_s(arrayList->maxSize*sizeof(void*));
+	memset(arrayList->arrays,0,arrayList->maxSize);
+	return arrayList;
+}
+
+BOOL ArrayListAdd(ArrayList* arrayList,void* value)
+{
+	unsigned long i;
+	if(!arrayList->fragmented)
+		return ArrayListPush(arrayList,value);
+	for(i=0;i<arrayList->usedSize;i++)
+	{
+		if(arrayList->arrays[i]==NULL)
+		{
+			arrayList->arrays[i]=value;
+			return TRUE;
+		}
+	}
+	arrayList->fragmented=FALSE;
+	return ArrayListPush(arrayList,value);
+}
+
+BOOL ArrayListSet( ArrayList* arrayList,void* value,unsigned long index )
+{
+	if(index>arrayList->usedSize)
+		return FALSE;
+	if(index==arrayList->usedSize)
+		return ArrayListPush(arrayList,value);
+	arrayList->arrays[index]=value;
+	return TRUE;
+}
+
+BOOL ArrayListRemove( ArrayList* arrayList,void* value,BOOL autoFree)
+{
+	unsigned long i;
+	if(!ArrayListIndexOf(arrayList,value,&i))
+		return FALSE;
+	return ArrayListRemoveByIndex(arrayList,i,autoFree);
+}
+
+BOOL ArrayListRemoveByIndex(ArrayList* arrayList,unsigned long index,BOOL autoFree)
+{
+	if(index>=arrayList->usedSize)
+		return FALSE;
+
+	if(index!=(arrayList->usedSize-1)) //如果我们移除的项不在结尾,则这个ArrayList会破碎化
+		arrayList->fragmented=TRUE;
+
+	if(autoFree)
+		free(arrayList->arrays[index]);
+
+	arrayList->arrays[index]=NULL;
+
+	if(index==(arrayList->usedSize-1))
+		ArrayListRelocateEnd(arrayList);
+
+	return TRUE;
+}
+
+void* ArrayListGet(ArrayList* arrayList,unsigned long index)
+{
+	if(index>=arrayList->usedSize)
+		return NULL;
+	return arrayList->arrays[index];
+}
+
+BOOL ArrayListPush( ArrayList* arrayList,void* value )
+{
+	unsigned long i;
+	if(arrayList->usedSize==arrayList->maxSize)
+	{
+		i = arrayList->maxSize;
+		if(ArrayListGrow(arrayList,(unsigned long)(arrayList->maxSize*arrayList->growRatio)) <= i) //如果扩容失败的话,就返回false
+			return FALSE;
+	}
+	arrayList->arrays[arrayList->usedSize++]=value;
+	return TRUE;
+}
+
+void* ArrayListPop(ArrayList* arrayList,BOOL remove)
+{
+	void* value = NULL;
+	if(arrayList->usedSize<1)
+		return NULL;
+	value = arrayList->arrays[arrayList->usedSize-1];
+	if(remove)
+	{
+		arrayList->arrays[arrayList->usedSize-1]=NULL;
+		ArrayListRelocateEnd(arrayList);
+	}
+	return value;
+}
+
+BOOL ArrayListIndexOf( ArrayList* arrayList,void* value,unsigned long *result )
+{
+	unsigned long i;
+	for(i=0;i<arrayList->usedSize;i++)
+	{
+		if(arrayList->arrays[i]==value)
+		{
+			*result = i;
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+unsigned long ArrayListGrow( ArrayList* arrayList,unsigned long size )
+{
+	unsigned long i = arrayList->maxSize;
+	if(size>i)
+	{
+		arrayList->maxSize=size;
+		arrayList->arrays=(void**)realloc_s(arrayList->arrays,arrayList->maxSize*sizeof(void*));
+		memset(arrayList->arrays+i,0,arrayList->maxSize-i);  //我不确定这玩意是否没问题...
+	}
+	return i;
+}
+
+ArrayListIterator* ArrayListMakeIterator( ArrayList* arrayList )
+{
+	ArrayListIterator *iterator = (ArrayListIterator*)malloc_s(sizeof(ArrayListIterator));
+	iterator->arrayList=arrayList;
+	iterator->pointer=0;
+	return iterator;
+}
+
+BOOL ArrayListIteratorHasNext( ArrayListIterator* iterator,BOOL autoFree)
+{
+	for(;iterator->pointer < iterator->arrayList->usedSize;iterator->pointer++)
+	{
+		if(iterator->arrayList->arrays[iterator->pointer]!=NULL)
+			return TRUE;
+	}
+	if(autoFree)
+		free(iterator);
+	return FALSE;
+}
+
+void* ArrayListIteratorGetNext( ArrayListIterator* iterator )
+{
+	void* value = iterator->arrayList->arrays[iterator->pointer];
+	iterator->pointer++;
+	return value;
+}
+
+void ArrayListRelocateEnd(ArrayList* arrayList)
+{
+	unsigned long i = arrayList->usedSize;
+	for(;i>0;i--)
+	{
+		if(arrayList->arrays[i-1]!=NULL)
+			break;
+	}
+	arrayList->usedSize=i;
 }

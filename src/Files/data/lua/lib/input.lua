@@ -4,9 +4,9 @@ Input Lib
 --]]
 
 Input = {};
-input = Input;
 
 Input.inputstream = "";
+Input.textInputActivated = false;
 
 function Input.inputKeyDown(keycode)
     if keycode == 8 then
@@ -25,6 +25,24 @@ function Input.inputKeyDown(keycode)
 end
 
 function Input.inputText(text)
+    if(Input.textInputActivated == false) then return 1 end;
     Input.inputstream=Input.inputstream..text;
     return 0;
+end
+
+function Input.enableTextInput()
+    CEnableTextInput();
+    Input.textInputActivated = true;
+end
+
+function Input.disableTextInput()
+    CDisableTextInput();
+    Input.textInputActivated = false;
+    return Input.clearInputstream();
+end
+
+function Input.clearInputstream()
+    local str = Input.inputstream;
+    Input.inputstream = "";
+    return str;
 end

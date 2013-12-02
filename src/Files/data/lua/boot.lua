@@ -20,7 +20,10 @@ function main()
     require("graphics");
     require("input");
     require("util");
+    require("gui");
+    require("oop");
     require("game");
+    --Gui.init();
     initGame();
     return 0;
 end

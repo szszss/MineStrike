@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "util.h"
+#include "collection.h"
 
 extern SDL_Window *window;
 
@@ -100,6 +101,29 @@ BOOL OS_PathExist(char* path)
 		free(utf8text);
 	free(newWText);
 	return newText;
+}*/
+
+/*ArrayList* OS_GetFilesOfFolder(char* path)
+{
+	HANDLE hFile;
+	WIN32_FIND_DATA c_file;
+	char* pathFilter = (char*)malloc_s((strlen(path)+7)*sizeof(char));
+	ArrayList* arrayList = NULL;
+	//char** files = *result;
+	memset(pathFilter,0,(strlen(path)+7));
+	strcat(pathFilter,path);
+	strcat(pathFilter,"\\*.lua");
+	hFile = FindFirstFile(pathFilter, &c_file);
+	if(hFile == INVALID_HANDLE_VALUE)
+	{
+		arrayList = ArrayListCreate(ARRAYLIST_DEFAULT_SIZE,ARRAYLIST_DEFAULT_RATIO);
+		return arrayList;
+	}
+	FindNextFile
+	if(!(c_file.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+	{
+
+	}
 }*/
 
 #endif

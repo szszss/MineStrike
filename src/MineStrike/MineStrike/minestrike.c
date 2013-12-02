@@ -33,7 +33,6 @@ int main(int argc, char *argv[])
 int GameMainLoop()
 {
 	int stats = 0;
-	SDL_StartTextInput();
 	while(1)
 	{
 		if(Update()!=0 || RE_Render()!=0)

@@ -6,9 +6,12 @@
 lua_State *luaState = NULL;
 
 void* Lua_malloc(void *ud,void *ptr,size_t osize,size_t nsize);
-int Lua_registerFunction();
+int Lua_registerFunctions();
+int Lua_register(lua_CFunction function,char* name);
 int CDrawText(lua_State *L);
 int CDrawImage(lua_State *L);
+int CEnableTextInput(lua_State *L);
+int CDisableTextInput(lua_State *L);
 int CWindowSetTitle(lua_State *L);
 
 int InitLua()
@@ -20,7 +23,7 @@ int InitLua()
 		return 1;
 	}
 	luaL_openlibs(luaState);
-	if(Lua_registerFunction(luaState))
+	if(Lua_registerFunctions())
 	{
 		return 1;
 	}
@@ -111,15 +114,20 @@ int LuaInputKeyDown(const int key)
 	return 0;
 }
 
-
-int Lua_registerFunction(lua_State *L)
+int Lua_register(lua_CFunction function,char* name)
 {
-	lua_pushcfunction(L,CDrawText);
-	lua_setglobal(L,"CDrawText");
-	lua_pushcfunction(L,CWindowSetTitle);
-	lua_setglobal(L,"CWindowSetTitle");
-	lua_pushcfunction(L,CDrawImage);
-	lua_setglobal(L,"CDrawImage");
+	lua_pushcfunction(luaState,function);
+	lua_setglobal(luaState,name);
+	return 0;
+}
+
+int Lua_registerFunctions()
+{
+	Lua_register(CDrawText,"CDrawText");
+	Lua_register(CDrawImage,"CDrawImage");
+	Lua_register(CWindowSetTitle,"CWindowSetTitle");
+	Lua_register(CEnableTextInput,"CEnableTextInput");
+	Lua_register(CDisableTextInput,"CDisableTextInput");
 	return 0;
 }
 
@@ -162,5 +170,17 @@ int CWindowSetTitle( lua_State *L )
 	char* title = (char*)lua_tostring(L,1);
 	OS_SetWindowTitle(title);
 	//GameSetTitle("нт╡ш!");
+	return 0;
+}
+
+int CEnableTextInput(lua_State *L)
+{
+	SDL_StartTextInput();
+	return 0;
+}
+
+int CDisableTextInput(lua_State *L)
+{
+	SDL_StopTextInput();
 	return 0;
 }
